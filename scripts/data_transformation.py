@@ -1,9 +1,8 @@
 #data_transformation.py
 
 import os
-from data_extraction import DataExtraction
 
-class DataLoading:
+class DataTransformation:
     
     def edited_data(self, df):
         df.drop(['uri','track_href','track_href','duration_ms','track_id','analysis_url','type'],axis=1, inplace=True)
