@@ -1,6 +1,5 @@
 # data_loading.py
 
-import sys
 import os
 from data_extraction import DataExtraction
 
