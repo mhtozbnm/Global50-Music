@@ -69,7 +69,7 @@ class DataExtraction:
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         
-        csv_file_path = os.path.join(output_folder, 'spotify_data.csv')
+        csv_file_path = os.path.join(output_folder, 'raw_spotify_data.csv')
         df.to_csv(csv_file_path, index=False)
         print(f"Veri başarıyla {csv_file_path} konumuna kaydedildi.")
 
