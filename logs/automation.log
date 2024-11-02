@@ -1,0 +1,9 @@
+2024-11-02 19:15:05,326:INFO:Otomasyon baþlatýldý.
+2024-11-02 19:15:05,327:INFO:Spotify API baðlantýsý baþarýlý.
+2024-11-02 19:15:09,405:INFO:Veriler baþarýyla çekildi ve iþlendi.
+2024-11-02 19:15:09,411:INFO:Ham veriler CSV olarak kaydedildi: data/raw\spotify_data_20241102.csv
+2024-11-02 19:15:09,416:INFO:Veriler CSV olarak kaydedildi: data/processed\spotify_data_20241102.csv
+2024-11-02 19:15:09,511:INFO:Veritabaný baðlantýsý baþarýlý.
+2024-11-02 19:15:09,680:INFO:Veriler spotify_top_50 tablosuna yüklendi.
+2024-11-02 19:15:09,680:INFO:Veriler veritabanýna yüklendi.
+2024-11-02 19:15:09,680:INFO:Otomasyon baþarýyla tamamlandý.

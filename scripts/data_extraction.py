@@ -11,18 +11,25 @@ import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from config import config  # config klasöründen config.py modülünü import ediyoruz
+import logging
 
 class DataExtraction:
     def __init__(self):
         self.sp = self.connect_api()
     
     def connect_api(self):
-        auth_manager = SpotifyClientCredentials(
-            client_id=config.client_id,
-            client_secret=config.client_secret)
-        sp = spotipy.Spotify(auth_manager=auth_manager)
-        return sp
-    
+        try:
+            auth_manager = SpotifyClientCredentials(
+                client_id=config.client_id,
+                client_secret=config.client_secret)
+            sp = spotipy.Spotify(auth_manager=auth_manager)
+            logging.info('Spotify API bağlantısı başarılı.')
+            return sp
+        except Exception as e:
+            logging.error(f'Spotify API bağlantısı başarısız: {e}')
+            raise
+
+
     def get_data(self, playlist_id='37i9dQZEVXbMDoHDwVN2tF'):
         try:
             results = self.sp.playlist_items(playlist_id)
@@ -56,11 +63,12 @@ class DataExtraction:
     
             # İki DataFrame'i birleştirelim
             final_df = pd.concat([df, features_df], axis=1)
-    
+
+            logging.info('Veriler başarıyla çekildi ve işlendi.')
             return final_df
         
         except Exception as e:
-            print(f"Veri çekme işleminde hata oluştu: {e}")
+            logging.error(f'Veri çekme işleminde hata oluştu: {e}')
             return None
 
 # DataFrame'i CSV olarak kaydetme fonksiyonu ekleyelim
