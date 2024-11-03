@@ -32,43 +32,106 @@ class DataExtraction:
 
     def get_data(self, playlist_id='37i9dQZEVXbMDoHDwVN2tF'):
         try:
-            results = self.sp.playlist_items(playlist_id)
-    
+            # Playlist kontrolü
+            try:
+                results = self.sp.playlist_items(
+                    playlist_id,
+                )
+                logging.info(f'Playlist başarıyla alındı: {playlist_id}')
+            except spotipy.exceptions.SpotifyException as e:
+                logging.error(f'Spotify API hatası: {e}')
+                return None
+            except Exception as e:
+                logging.error(f'Playlist alınırken beklenmeyen hata: {e}')
+                return None
+
             tracks = results['items']
             track_list = []
-    
-            for item in tracks:
-                track = item['track']
-                track_info = {
-                    'track_name': track.get('name'),
-                    'artist_name': track['artists'][0]['name'] if track.get('artists') else None,
-                    'album_name': track['album'].get('name') if track.get('album') else None,
-                    'release_date': track['album'].get('release_date') if track.get('album') else None,
-                    'total_tracks': track['album'].get('total_tracks') if track.get('album') else None,
-                    'popularity': track.get('popularity'),
-                    'track_id': track.get('id')
-                }
-                track_list.append(track_info)
-    
-            df = pd.DataFrame(track_list)
-    
-            # Ses özelliklerini ekleyelim
-            audio_features = []
-    
-            for track_id in df['track_id']:
-                features = self.sp.audio_features(track_id)[0]
-                audio_features.append(features)
-    
-            features_df = pd.DataFrame(audio_features)
-    
-            # İki DataFrame'i birleştirelim
-            final_df = pd.concat([df, features_df], axis=1)
 
-            logging.info('Veriler başarıyla çekildi ve işlendi.')
-            return final_df
-        
+            # Her bir parça için bilgi toplama
+            for item in tracks:
+                try:
+                    if not item or 'track' not in item or not item['track']:
+                        continue
+
+                    track = item['track']
+                    
+                    # Temel kontroller
+                    if not track.get('id'):
+                        continue
+
+                    track_info = {
+                        'track_name': track.get('name', 'Bilinmeyen'),
+                        'artist_name': track.get('artists', [{}])[0].get('name', 'Bilinmeyen'),
+                        'album_name': track.get('album', {}).get('name', 'Bilinmeyen'),
+                        'release_date': track.get('album', {}).get('release_date', None),
+                        'total_tracks': track.get('album', {}).get('total_tracks', 0),
+                        'popularity': track.get('popularity', 0),
+                        'track_id': track.get('id')
+                    }
+                    track_list.append(track_info)
+                    logging.debug(f'Şarkı bilgisi eklendi: {track_info["track_name"]}')
+
+                except Exception as e:
+                    logging.warning(f'Şarkı bilgisi işlenirken hata: {e}')
+                    continue
+
+            if not track_list:
+                logging.error('Hiç geçerli şarkı bulunamadı.')
+                return None
+
+            df = pd.DataFrame(track_list)
+            logging.info(f'Toplam {len(df)} şarkı bilgisi alındı.')
+
+            # Ses özelliklerini batch halinde alma
+            audio_features = []
+            batch_size = 50  # Spotify API sınırı
+
+            # Track ID'leri None olmayanları filtrele
+            valid_track_ids = df['track_id'].dropna().tolist()
+
+            for i in range(0, len(valid_track_ids), batch_size):
+                batch_ids = valid_track_ids[i:i+batch_size]
+                try:
+                    features_batch = self.sp.audio_features(batch_ids)
+                    # None olmayan özellikleri ekle
+                    valid_features = [f for f in features_batch if f is not None]
+                    audio_features.extend(valid_features)
+                    logging.debug(f'Batch {i//batch_size + 1} ses özellikleri alındı')
+                except Exception as e:
+                    logging.error(f'Ses özellikleri alınırken hata (batch {i//batch_size + 1}): {e}')
+                    continue
+
+            if not audio_features:
+                logging.error('Hiç ses özelliği alınamadı.')
+                return df  # En azından temel verileri döndür
+
+            features_df = pd.DataFrame(audio_features)
+
+            # DataFrame'leri birleştirme
+            try:
+                # track_id'ye göre birleştirme
+                final_df = pd.merge(
+                    df,
+                    features_df,
+                    left_on='track_id',
+                    right_on='id',
+                    how='left'
+                )
+                
+                # Gereksiz sütunları temizle
+                if 'id' in final_df.columns:
+                    final_df = final_df.drop('id', axis=1)
+                    
+                logging.info(f'Veri başarıyla işlendi. Final DataFrame boyutu: {final_df.shape}')
+                return final_df
+
+            except Exception as e:
+                logging.error(f'DataFrame birleştirme hatası: {e}')
+                return df
+
         except Exception as e:
-            logging.error(f'Veri çekme işleminde hata oluştu: {e}')
+            logging.error(f'Genel veri çekme hatası: {e}')
             return None
 
 # DataFrame'i CSV olarak kaydetme fonksiyonu ekleyelim
@@ -81,11 +144,7 @@ class DataExtraction:
         df.to_csv(csv_file_path, index=False)
         print(f"Veri başarıyla {csv_file_path} konumuna kaydedildi.")
 
-# Eğer bu dosya doğrudan çalıştırılırsa
-if __name__ == '__main__':
-    data_extractor = DataExtraction()
-    final_df = data_extractor.get_data()
-    data_extractor.save_data(final_df)
+
     
 
     

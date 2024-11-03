@@ -1,9 +1,22 @@
-2024-11-02 19:15:05,326:INFO:Otomasyon baþlatýldý.
-2024-11-02 19:15:05,327:INFO:Spotify API baðlantýsý baþarýlý.
-2024-11-02 19:15:09,405:INFO:Veriler baþarýyla çekildi ve iþlendi.
+2024-11-02 19:15:05,326:INFO:Otomasyon baï¿½latï¿½ldï¿½.
+2024-11-02 19:15:05,327:INFO:Spotify API baï¿½lantï¿½sï¿½ baï¿½arï¿½lï¿½.
+2024-11-02 19:15:09,405:INFO:Veriler baï¿½arï¿½yla ï¿½ekildi ve iï¿½lendi.
 2024-11-02 19:15:09,411:INFO:Ham veriler CSV olarak kaydedildi: data/raw\spotify_data_20241102.csv
 2024-11-02 19:15:09,416:INFO:Veriler CSV olarak kaydedildi: data/processed\spotify_data_20241102.csv
-2024-11-02 19:15:09,511:INFO:Veritabaný baðlantýsý baþarýlý.
-2024-11-02 19:15:09,680:INFO:Veriler spotify_top_50 tablosuna yüklendi.
-2024-11-02 19:15:09,680:INFO:Veriler veritabanýna yüklendi.
-2024-11-02 19:15:09,680:INFO:Otomasyon baþarýyla tamamlandý.
+2024-11-02 19:15:09,511:INFO:Veritabanï¿½ baï¿½lantï¿½sï¿½ baï¿½arï¿½lï¿½.
+2024-11-02 19:15:09,680:INFO:Veriler spotify_top_50 tablosuna yï¿½klendi.
+2024-11-02 19:15:09,680:INFO:Veriler veritabanï¿½na yï¿½klendi.
+
+
+
+2024-11-03 21:08:03:INFO:Otomasyon baþlatýldý.
+2024-11-03 21:08:03:INFO:Spotify API baðlantýsý baþarýlý.
+2024-11-03 21:08:04:INFO:Playlist baþarýyla alýndý: 37i9dQZEVXbMDoHDwVN2tF
+2024-11-03 21:08:04:INFO:Toplam 50 þarký bilgisi alýndý.
+2024-11-03 21:08:04:INFO:Veri baþarýyla iþlendi. Final DataFrame boyutu: (50, 24)
+2024-11-03 21:08:04:INFO:Ham veriler kaydedildi: c:\dev\mypythonproject\musiceventproject\scripts\..\data\raw\spotify_data_20241103.csv
+2024-11-03 21:08:04:INFO:Ýþlenmiþ veriler kaydedildi: c:\dev\mypythonproject\musiceventproject\scripts\..\data\processed\spotify_data_20241103.csv
+2024-11-03 21:08:04:INFO:Veritabaný baðlantýsý baþarýlý.
+2024-11-03 21:08:04:INFO:Veriler spotify_top_50 tablosuna yüklendi.
+2024-11-03 21:08:04:INFO:Veriler veritabanýna yüklendi.
+2024-11-03 21:08:04:INFO:Otomasyon baþarýyla tamamlandý.
